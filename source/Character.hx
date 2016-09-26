@@ -25,6 +25,9 @@ class Character extends FlxTypedGroup<FlxNapeSprite> {
     var legR     :FlxNapeSprite;
     var head     :FlxNapeSprite;
 
+    var armPinL  :PivotJoint;
+    var armPinR  :PivotJoint;
+
     static inline var upperArmLength = 250;
     static inline var lowerArmLength = 225;
     static inline var armGirth       = 70;
@@ -37,6 +40,41 @@ class Character extends FlxTypedGroup<FlxNapeSprite> {
     public function new(startX:Float, startY:Float) {
         super();
 
+        buildBody(startX,startY);
+
+        moveArm(LEFT,0,0);
+    }
+
+    public function moveArm(which:ARM, x:Float, y:Float) {
+        var arm = which==LEFT?lowerArmL:lowerArmR;
+        var armAnchorPos = new Vec2(0,arm.height/2-arm.width/2);
+        var newArmPos    = new Vec2(x,y);
+
+        switch(which) {
+        case LEFT:
+            if(armPinL == null) {
+                armPinL = new PivotJoint(arm.body,FlxNapeSpace.space.world, armAnchorPos, newArmPos);
+                armPinL.stiff = false;
+                armPinL.damping = 2;
+                armPinL.frequency = 2;
+                armPinL.space = FlxNapeSpace.space;
+            }
+            else
+                armPinL.anchor2 = newArmPos;
+        case RIGHT:
+            if(armPinR == null) {
+                armPinR = new PivotJoint(arm.body,FlxNapeSpace.space.world, armAnchorPos, newArmPos);
+                armPinR.stiff = false;
+                armPinR.damping = 2;
+                armPinR.frequency = 2;
+                armPinR.space = FlxNapeSpace.space;
+            }
+            else
+                armPinR.anchor2 = newArmPos;
+        }
+    }
+
+    function buildBody(startX:Float,startY:Float) {
         // TORSO (fixed in place)
         torso = buildBodyPart(startX, startY, 180,300, RECTANGLE);
 
@@ -98,6 +136,7 @@ class Character extends FlxTypedGroup<FlxNapeSprite> {
                     new Vec2(x2,y2));
 
             cons.space=FlxNapeSpace.space;
+            /*
             cons = new AngleJoint(
                     part1.body,
                     part2.body,
@@ -105,6 +144,7 @@ class Character extends FlxTypedGroup<FlxNapeSprite> {
             cons.stiff = false;
             cons.frequency=1;
             cons.damping = 0.8;
+            */
         }
         else {
             cons = new WeldJoint(
@@ -167,4 +207,9 @@ enum PART_SHAPE {
     OBLONG_H;
     OBLONG_V;
     ELLIPSE;
+}
+
+enum ARM {
+    LEFT;
+    RIGHT;
 }
