@@ -250,10 +250,13 @@ class Character extends FlxGroup {
             lowerArmR.body.rotation += Math.PI*2;
 
 
-        armPosL = lowerArmL.body.rotation % (Math.PI*2);
-        if(armPosL < 0) armPosL += Math.PI*2;
-        armPosR = lowerArmR.body.rotation % (Math.PI*2);
-        if(armPosR < 0) armPosR += Math.PI*2;
+        if(lowerArmL.body.velocity.length < 25
+                && lowerArmR.body.velocity.length < 25) {
+            armPosL = lowerArmL.body.rotation % (Math.PI*2);
+            if(armPosL < 0) armPosL += Math.PI*2;
+            armPosR = lowerArmR.body.rotation % (Math.PI*2);
+            if(armPosR < 0) armPosR += Math.PI*2;
+        }
 
     }
 

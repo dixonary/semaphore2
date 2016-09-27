@@ -7,6 +7,7 @@ import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.math.FlxMath;
 import flixel.addons.nape.*;
+import flixel.system.FlxSound;
 using Lambda;
 
 class PlayState extends FlxState
@@ -22,6 +23,8 @@ class PlayState extends FlxState
     var correctTimer:Float = 0;
 
     var currentLetterTxt:FlxText;
+
+    var ding:FlxSound;
 
     var positions = [
         {p:"A",l:1,r:0},
@@ -65,21 +68,23 @@ class PlayState extends FlxState
 
         FlxNapeSpace.space.gravity.setxy(0,1000);
 
+
+        var texts = openfl.Assets.getText("assets/data/tweets.txt").split("\n");
+
         char = new Character(FlxG.width/4, 700);
         add(char);
 
-        currentLetterTxt = new FlxText(100,100,FlxG.width, "");
+        currentLetterTxt = new FlxText(100,100,FlxG.width, texts[Math.floor(Math.random()*texts.length)]);
         currentLetterTxt.setFormat("assets/fonts/gs.ttf",200, 0xff000000);
         add(currentLetterTxt);
 
+        ding = new FlxSound().loadEmbedded("assets/sounds/ding.ogg");
 
     }
 
     override public function update(elapsed:Float):Void
     {
         super.update(elapsed);
-
-        currentLetterTxt.text = activeLetter;
 
         if(FlxG.keys.pressed.NUMPADTWO   ) position=0/7;
         if(FlxG.keys.pressed.NUMPADONE   ) position=1/7;
@@ -101,12 +106,8 @@ class PlayState extends FlxState
         currentSemaphore = getChar();
         if(currentSemaphore == activeLetter) {
             correctTimer+=elapsed;
-        }
-
-        if(correctTimer >= 0.15) {
-            FlxG.sound.play("assets/sounds/ding.ogg");
+            ding.play(true);
             correctTimer = 0;
-            activeLetter = String.fromCharCode(activeLetter.charCodeAt(0)+1);
         }
 
     }
