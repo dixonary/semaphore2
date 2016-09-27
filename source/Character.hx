@@ -47,6 +47,9 @@ class Character extends FlxGroup {
     var upperGroup:FlxGroup;
     var lowerGroup:FlxGroup;
 
+    public var armPosL:Float = 0;
+    public var armPosR:Float = 0;
+
 
     public static function sc(i:Int):Int{
         return cast i/2;
@@ -245,6 +248,12 @@ class Character extends FlxGroup {
 
         if(upperArmR.body.rotation - lowerArmR.body.rotation > Math.PI)
             lowerArmR.body.rotation += Math.PI*2;
+
+
+        armPosL = lowerArmL.body.rotation % (Math.PI*2);
+        if(armPosL < 0) armPosL += Math.PI*2;
+        armPosR = lowerArmR.body.rotation % (Math.PI*2);
+        if(armPosR < 0) armPosR += Math.PI*2;
 
     }
 

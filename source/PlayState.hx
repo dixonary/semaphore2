@@ -7,6 +7,7 @@ import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.math.FlxMath;
 import flixel.addons.nape.*;
+using Lambda;
 
 class PlayState extends FlxState
 {
@@ -15,6 +16,41 @@ class PlayState extends FlxState
     var el:Float = 0;
 
     var position:Float = 0;
+
+    var currentSemaphore:Null<String>;
+    var activeLetter = "A";
+    var correctTimer:Float = 0;
+
+    var currentLetterTxt:FlxText;
+
+    var positions = [
+        {p:"A",l:1,r:0},
+        {p:"B",l:2,r:0},
+        {p:"C",l:3,r:0},
+        {p:"D",l:4,r:0},
+        {p:"E",l:0,r:5},
+        {p:"F",l:0,r:6},
+        {p:"G",l:0,r:7},
+        {p:"H",l:2,r:1},
+        {p:"I",l:3,r:1},
+        {p:"J",l:4,r:6},
+        {p:"K",l:1,r:4},
+        {p:"L",l:1,r:5},
+        {p:"M",l:1,r:6},
+        {p:"N",l:1,r:7},
+        {p:"O",l:2,r:3},
+        {p:"P",l:2,r:4},
+        {p:"Q",l:2,r:5},
+        {p:"R",l:2,r:6},
+        {p:"S",l:2,r:7},
+        {p:"T",l:3,r:4},
+        {p:"U",l:3,r:5},
+        {p:"V",l:4,r:7},
+        {p:"W",l:5,r:6},
+        {p:"X",l:5,r:7},
+        {p:"Y",l:3,r:6},
+        {p:"Z",l:7,r:6},
+        {p:" ",l:0,r:0}];
 
     override public function create():Void
     {
@@ -29,8 +65,13 @@ class PlayState extends FlxState
 
         FlxNapeSpace.space.gravity.setxy(0,1000);
 
-        char = new Character(FlxG.width/2, FlxG.height/2);
+        char = new Character(FlxG.width/4, 700);
         add(char);
+
+        currentLetterTxt = new FlxText(100,100,FlxG.width, "");
+        currentLetterTxt.setFormat("assets/fonts/gs.ttf",200, 0xff000000);
+        add(currentLetterTxt);
+
 
     }
 
@@ -38,10 +79,7 @@ class PlayState extends FlxState
     {
         super.update(elapsed);
 
-#if desktop
-        if(FlxG.keys.justPressed.Q)
-            Sys.exit(0);
-#end
+        currentLetterTxt.text = activeLetter;
 
         if(FlxG.keys.pressed.NUMPADTWO   ) position=0/7;
         if(FlxG.keys.pressed.NUMPADONE   ) position=1/7;
@@ -60,6 +98,25 @@ class PlayState extends FlxState
         if(FlxG.keys.pressed.D)
             char.moveArm(RIGHT,scaledPosition);
 
+        currentSemaphore = getChar();
+        if(currentSemaphore == activeLetter) {
+            correctTimer+=elapsed;
+        }
+
+        if(correctTimer >= 0.15) {
+            FlxG.sound.play("assets/sounds/ding.ogg");
+            correctTimer = 0;
+            activeLetter = String.fromCharCode(activeLetter.charCodeAt(0)+1);
+        }
+
+    }
+
+    function getChar():Null<String> {
+        var nearestPosL = Math.floor((char.armPosL/Math.PI/2+0.0625)%1*8);
+        var nearestPosR = Math.floor((char.armPosR/Math.PI/2+0.0625)%1*8);
+
+        var k = positions.find(function(s) return s.l == nearestPosL && s.r == nearestPosR);
+        return k==null?null:k.p;
     }
 
 }
