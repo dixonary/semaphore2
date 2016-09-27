@@ -70,7 +70,8 @@ class Character extends FlxGroup {
         var armAnchorPos = new Vec2(0,arm.height/2-arm.width/2);
         var dist = (upperArmLength + lowerArmLength )*1.5;
 
-        var xp = Math.cos(pos)*0.8 * dist + torso.body.position.x+(which==LEFT?-1:1)*(torso.width/2+armGap+armGirth/2);
+        var xp = Math.cos(pos)*0.8 * dist + torso.body.position.x
+            +(which==LEFT?-1:1)*(torso.width/2+armGap+armGirth/2);
         var yp = Math.sin(pos)*0.8 * dist + torso.body.position.y-torso.height/2;
         var newArmPos    = new Vec2(xp,yp);
 
@@ -269,7 +270,8 @@ class Flag extends FlxNapeSprite {
         makeGraphic(flagSize, poleLength, 0x00000000);
         antialiasing=true;
         drawRect(0,0,poleWidth, poleLength, 0xff000000);
-        drawRect(poleWidth, poleLength-flagSize, flagSize-poleWidth, flagSize,0xffff0000);
+        drawRect(poleWidth, poleLength-flagSize,
+                flagSize-poleWidth, flagSize,0xffff0000);
         drawPolygon([
                 new FlxPoint(poleWidth, poleLength-flagSize),
                 new FlxPoint(flagSize,  poleLength),
