@@ -52,7 +52,7 @@ class Character extends FlxGroup {
 
 
     public static function sc(i:Int):Int{
-        return cast i/2;
+        return cast i*0.7;
     }
 
     public function new(startX:Float, startY:Float) {
