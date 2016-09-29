@@ -96,8 +96,6 @@ class PlayState extends FlxState
         char.moveArm(LEFT,Math.PI/2);
         char.moveArm(RIGHT,Math.PI/2);
 
-        Reg.ard.report = function(s) trace(s);
-
     }
 
     override public function update(elapsed:Float):Void

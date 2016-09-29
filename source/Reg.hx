@@ -1,3 +1,5 @@
+import haxe_arduino.ArduinoBridge;
+
 class Reg {
 
     public static var ard:ArduinoBridge;

@@ -44,6 +44,7 @@
 	<!--In case you want to use nape with flixel-->
 	<haxelib name="nape" />
         <haxelib name="hxSerial" />
+        <haxelib name="haxe_arduino" />
 
 	<!-- ______________________________ Haxedefines _____________________________ -->
 

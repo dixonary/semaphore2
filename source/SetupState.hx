@@ -1,7 +1,6 @@
 package;
 
 import cpp.vm.Thread;
-
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -11,6 +10,7 @@ import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.addons.nape.*;
 import flixel.system.FlxSound;
+import haxe_arduino.ArduinoBridge;
 using StringTools;
 using flixel.util.FlxSpriteUtil;
 using Lambda;
@@ -37,7 +37,7 @@ class SetupState extends FlxState
 
     function setupArduino() {
 
-        Reg.ard = new ArduinoBridge(writeOut,true);
+        Reg.ard = new ArduinoBridge();
 
         Reg.ard.setDigitalPin(Reg.LED_PIN, HIGH);
         Reg.ard.setAnalogPinMax(Reg.DIAL_PIN, 650);
@@ -62,7 +62,6 @@ class SetupState extends FlxState
                 if(Reg.ard.readAnalogPin(Reg.DIAL_PIN) != null) {
                     writeOut("CONNECTION ESTABLISHED!");
                     writeOut("Press SPACE to continue");
-                    Reg.ard.verbose = false;
                     ready = true;
                 }
             }
