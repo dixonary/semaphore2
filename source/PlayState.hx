@@ -27,6 +27,8 @@ class PlayState extends FlxState
 
     var currentLetterTxt:FlxText;
 
+    var currentArm : Character.ARM = LEFT;
+
     var ding:FlxSound;
     var tick:BigGreenTick;
 
@@ -64,6 +66,7 @@ class PlayState extends FlxState
         super.create();
 
         var texts = openfl.Assets.getText("assets/data/tweets.txt").split("\n");
+
 
         currentLetterTxt = new FlxText(50,50,FlxG.width-100, texts[Math.floor(Math.random()*texts.length)]);
         //currentLetterTxt = new FlxText(50,50,FlxG.width-100, "hi");
@@ -114,14 +117,18 @@ class PlayState extends FlxState
         */
 
         position = 1-Reg.ard.getAnalogPin(Reg.DIAL_PIN);
+        var switchPin : Bool = Reg.ard.getDigitalPin(Reg.BUTTON_PIN);
 
         //convert from [0..1] to target position of arms
         var scaledPosition = position * Math.PI * 2 + Math.PI * 0.5;
 
-        if(FlxG.keys.pressed.LEFT)
-            char.moveArm(LEFT,scaledPosition);
-        if(FlxG.keys.pressed.RIGHT)
-            char.moveArm(RIGHT,scaledPosition);
+        // switch arm
+        if(switchPin
+           || FlxG.keys.justReleased.LEFT
+           || FlxG.keys.justReleased.RIGHT) {
+            currentArm = (currentArm == LEFT) ? RIGHT : LEFT;
+        }
+        char.moveArm(currentArm, scaledPosition);
 
         if(FlxG.keys.pressed.NUMPADMULTIPLY)
             FlxG.resetState();
@@ -137,6 +144,7 @@ class PlayState extends FlxState
         }
 
         Reg.ard.requestAnalogPin(Reg.DIAL_PIN);
+        Reg.ard.requestDigitalPin(Reg.BUTTON_PIN);
 
     }
 
