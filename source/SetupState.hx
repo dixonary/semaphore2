@@ -43,6 +43,11 @@ class SetupState extends FlxState
         Reg.ard.setAnalogPinMax(Reg.DIAL_PIN, 650);
         Reg.ard.setAnalogPinActive(Reg.DIAL_PIN, true);
 
+        while(true) {
+            Sys.sleep(0.0016);
+            Reg.ard.sync();
+        }
+
     }
 
     function writeOut(s:Dynamic):Void {
@@ -58,12 +63,12 @@ class SetupState extends FlxState
             if(recheck <= 0) {
                 recheck += 0.25;
 
-                Reg.ard.sync();
-                if(Reg.ard.readAnalogPin(Reg.DIAL_PIN) != null) {
+                if(Reg.ard.getAnalogPin(Reg.DIAL_PIN) != null) {
                     writeOut("CONNECTION ESTABLISHED!");
                     writeOut("Press SPACE to continue");
                     ready = true;
                 }
+                Reg.ard.requestAnalogPin(Reg.DIAL_PIN);
             }
         }
 

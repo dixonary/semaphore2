@@ -113,10 +113,10 @@ class PlayState extends FlxState
         if(FlxG.keys.pressed.NUMPADTHREE ) position=7/7;
         */
 
-        position = 1-Reg.ard.readAnalogPin(Reg.DIAL_PIN);
+        position = 1-Reg.ard.getAnalogPin(Reg.DIAL_PIN);
 
         //convert from [0..1] to target position of arms
-        var scaledPosition = position * Math.PI * 7 / 4 + Math.PI * 0.5;
+        var scaledPosition = position * Math.PI * 2 + Math.PI * 0.5;
 
         if(FlxG.keys.pressed.LEFT)
             char.moveArm(LEFT,scaledPosition);
@@ -124,7 +124,7 @@ class PlayState extends FlxState
             char.moveArm(RIGHT,scaledPosition);
 
         if(FlxG.keys.pressed.NUMPADMULTIPLY)
-            FlxG.resetGame();
+            FlxG.resetState();
 
         currentSemaphore = getChar();
         trace(currentSemaphore + "," + currentLetterTxt.text.charAt(activeLetter));
@@ -136,10 +136,12 @@ class PlayState extends FlxState
             tick.show();
         }
 
+        Reg.ard.requestAnalogPin(Reg.DIAL_PIN);
+
     }
 
     function doneWord() {
-        FlxG.resetGame();
+        FlxG.resetState();
     }
 
     function setTextPos(pos) {
