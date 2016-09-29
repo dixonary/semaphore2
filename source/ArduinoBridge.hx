@@ -77,7 +77,7 @@ class ArduinoBridge
 
         // Say hello
         device_.flush(true);
-        device_.writeBytes("A");
+        device_.writeBytes("A\n");
 
         // Initialise pins to no data
         for (i in 0 ... ANALOG_PIN_COUNT)
