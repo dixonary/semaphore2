@@ -96,12 +96,15 @@ class PlayState extends FlxState
         char.moveArm(LEFT,Math.PI/2);
         char.moveArm(RIGHT,Math.PI/2);
 
+        Reg.ard.report = function(s) trace(s);
+
     }
 
     override public function update(elapsed:Float):Void
     {
         super.update(elapsed);
 
+        /*
         if(FlxG.keys.pressed.NUMPADTWO   ) position=0/7;
         if(FlxG.keys.pressed.NUMPADONE   ) position=1/7;
         if(FlxG.keys.pressed.NUMPADFOUR  ) position=2/7;
@@ -110,13 +113,16 @@ class PlayState extends FlxState
         if(FlxG.keys.pressed.NUMPADNINE  ) position=5/7;
         if(FlxG.keys.pressed.NUMPADSIX   ) position=6/7;
         if(FlxG.keys.pressed.NUMPADTHREE ) position=7/7;
+        */
+
+        position = 1-Reg.ard.readAnalogPin(Reg.DIAL_PIN);
 
         //convert from [0..1] to target position of arms
         var scaledPosition = position * Math.PI * 7 / 4 + Math.PI * 0.5;
 
-        if(FlxG.keys.pressed.A)
+        if(FlxG.keys.pressed.LEFT)
             char.moveArm(LEFT,scaledPosition);
-        if(FlxG.keys.pressed.D)
+        if(FlxG.keys.pressed.RIGHT)
             char.moveArm(RIGHT,scaledPosition);
 
         if(FlxG.keys.pressed.NUMPADMULTIPLY)
