@@ -29,6 +29,8 @@ class PlayState extends FlxState
 
     var currentArm : Character.ARM = LEFT;
 
+    var buttonDownLast : Bool = false;
+
     var ding:FlxSound;
     var tick:BigGreenTick;
 
@@ -117,13 +119,15 @@ class PlayState extends FlxState
         */
 
         position = 1-Reg.ard.getAnalogPin(Reg.DIAL_PIN);
-        var switchPin : Bool = Reg.ard.getDigitalPin(Reg.BUTTON_PIN);
+        var buttonDown : Bool = Reg.ard.getDigitalPin(Reg.BUTTON_PIN);
+        var switchArm : Bool = buttonDown && !buttonDownLast;
+        buttonDownLast = buttonDown;
 
         //convert from [0..1] to target position of arms
         var scaledPosition = position * Math.PI * 2 + Math.PI * 0.5;
 
         // switch arm
-        if(switchPin
+        if(switchArm
            || FlxG.keys.justReleased.LEFT
            || FlxG.keys.justReleased.RIGHT) {
             currentArm = (currentArm == LEFT) ? RIGHT : LEFT;
