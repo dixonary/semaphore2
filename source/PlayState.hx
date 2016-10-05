@@ -27,12 +27,14 @@ class PlayState extends FlxState
 
     var currentLetterTxt:FlxText;
 
-    var currentArm : Character.ARM = LEFT;
+    var currentArm (default,set): Character.ARM;
 
     var buttonDownLast : Bool = false;
 
     var ding:FlxSound;
     var tick:BigGreenTick;
+
+    var readCount = 0;
 
     var positions = [
         {p:"A",l:1,r:0},
@@ -67,8 +69,20 @@ class PlayState extends FlxState
     {
         super.create();
 
-        var texts = openfl.Assets.getText("assets/data/tweets.txt").split("\n");
+        var letters = new FlxSprite(0,0,"assets/images/letters-1.png");
+        letters.origin.set(0,0);
+        letters.scale.set(FlxG.height*0.65/letters.height, FlxG.height*0.65/letters.height);
+        letters.y = FlxG.height*0.35;
+        add(letters);
 
+        letters = new FlxSprite(0,0,"assets/images/letters-2.png");
+        letters.origin.set(0,0);
+        letters.scale.set(FlxG.height*0.65/letters.height, FlxG.height*0.65/letters.height);
+        letters.y = FlxG.height*0.35;
+        letters.x = FlxG.width-letters.width*letters.scale.x;
+        add(letters);
+
+        var texts = openfl.Assets.getText("assets/data/tweets.txt").split("\n");
 
         currentLetterTxt = new FlxText(50,50,FlxG.width-100, texts[Math.floor(Math.random()*texts.length)]);
         //currentLetterTxt = new FlxText(50,50,FlxG.width-100, "hi");
@@ -85,6 +99,7 @@ class PlayState extends FlxState
         FlxG.cameras.bgColor = 0xffeeeeee;
         FlxG.camera.antialiasing=true;
 
+
         FlxNapeSpace.init();
         FlxNapeSpace.space.gravity.setxy(0,1000);
 
@@ -98,9 +113,24 @@ class PlayState extends FlxState
         tick.x = (FlxG.width-tick.width)/2;
         tick.y = (FlxG.height-tick.height)/2;
 
+        currentArm = LEFT;
         char.moveArm(LEFT,Math.PI/2);
         char.moveArm(RIGHT,Math.PI/2);
 
+    }
+
+    function set_currentArm(which:Character.ARM):Character.ARM {
+        if(which == LEFT) {
+            Reg.ard.setDigitalPin(Reg.LEFT_PIN, HIGH);
+            Sys.sleep(0.016);
+            Reg.ard.setDigitalPin(Reg.RIGHT_PIN, LOW);
+        }
+        else {
+            Reg.ard.setDigitalPin(Reg.LEFT_PIN, LOW);
+            Sys.sleep(0.016);
+            Reg.ard.setDigitalPin(Reg.RIGHT_PIN, HIGH);
+        }
+        return currentArm = which;
     }
 
     override public function update(elapsed:Float):Void
@@ -147,7 +177,10 @@ class PlayState extends FlxState
             tick.show();
         }
 
-        Reg.ard.requestAnalogPin(Reg.DIAL_PIN);
+        readCount = (readCount+1)%2;
+        if(readCount==0)
+            Reg.ard.requestAnalogPin(Reg.DIAL_PIN);
+
         Reg.ard.requestDigitalPin(Reg.BUTTON_PIN);
 
     }

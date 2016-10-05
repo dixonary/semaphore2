@@ -1,0 +1,10 @@
+digraph graphname {
+n18274 [shape=box,label="<function-end>
+(18274)"];
+n18273 [shape=box,label="<function-begin>
+(18273)\nScopes: 0\nthis._count = 0\nvar oldPool = this._pool\nthis._pool = []\nreturn oldPool"];
+n1 [shape=box,label="<root>
+(1)"];
+n1 -> n18273[label="function [dce, copy, exe]"];
+n18273 -> n18274[label="goto [dce, copy, exe]"];
+}

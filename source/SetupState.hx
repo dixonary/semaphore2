@@ -1,6 +1,10 @@
 package;
 
+#if cpp
 import cpp.vm.Thread;
+#elseif neko
+import neko.vm.Thread;
+#end
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -21,6 +25,7 @@ class SetupState extends FlxState
     var setupText:FlxText;
     var recheck:Float = 0;
     var ready:Bool = false;
+    var buttonReady:Bool = false;
 
     override public function create():Void
     {
@@ -32,6 +37,7 @@ class SetupState extends FlxState
         setupText.size = 16;
         add(setupText);
         var t = Thread.create(setupArduino);
+        FlxG.fullscreen = true;
 
     }
 
@@ -39,7 +45,6 @@ class SetupState extends FlxState
 
         Reg.ard = new ArduinoBridge();
 
-        Reg.ard.setDigitalPin(Reg.LED_PIN, HIGH);
         Reg.ard.setAnalogPinMax(Reg.DIAL_PIN, 650);
         Reg.ard.setAnalogPinActive(Reg.DIAL_PIN, true);
 
@@ -64,15 +69,21 @@ class SetupState extends FlxState
                 recheck += 0.25;
 
                 if(Reg.ard.getAnalogPin(Reg.DIAL_PIN) != null) {
-                    writeOut("CONNECTION ESTABLISHED!");
-                    writeOut("Press SPACE to continue");
+                    Reg.ard.setDigitalPin(Reg.LEFT_PIN, HIGH);
+                    Reg.ard.setDigitalPin(Reg.RIGHT_PIN, LOW);
+                    Sys.sleep(0.3);
+                    Reg.ard.setDigitalPin(Reg.LEFT_PIN, LOW);
+                    Reg.ard.setDigitalPin(Reg.RIGHT_PIN, HIGH);
+                    Sys.sleep(0.05);
                     ready = true;
                 }
                 Reg.ard.requestAnalogPin(Reg.DIAL_PIN);
             }
+            Reg.ard.requestDigitalPin(Reg.BUTTON_PIN);
+            buttonReady = Reg.ard.getDigitalPin(Reg.BUTTON_PIN);
         }
 
-        if(FlxG.keys.justPressed.SPACE && ready)
+        if((FlxG.keys.justPressed.SPACE || buttonReady) && ready)
             FlxG.switchState(new PlayState());
 
     }
